@@ -7,6 +7,7 @@ public class UpdateValue : MonoBehaviour {
 
     private void Start() {
         tmp = GetComponent<TextMeshProUGUI>();
+        //Default value, might be better to make a reference to the slider/button and set the default.
         UpdateText(0.0f);
     }
     
