@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.AI;
 
 public class MeshGenerator : MonoBehaviour {
+
+    public NavMeshSurface surface;
 
     public SquareGrid squareGrid;
     public float wallHeight;
@@ -14,25 +17,76 @@ public class MeshGenerator : MonoBehaviour {
     //This is technically for a specific part, the cave
     public int tileAmount;
 
-    List<Vector3> vertices;
-    List<int> triangles;
+    Mesh groundMesh;
+    Mesh topMesh;
+    Mesh wallMesh;
+
+    GameObject ground;
+    GameObject top;
+    GameObject walls;
+    GameObject navMesh;
+
+    List<Vector3> topVertices;
+    List<int> topTriangles;
 
     Dictionary<int, List<Triangle>> triangleDictionary = new Dictionary<int, List<Triangle>>();
     List<List<int>> outlines = new List<List<int>>();
     HashSet<int> checkedVertices = new HashSet<int>();
 
-    public void GenerateMesh(int[,] map, float squareSize, int width, int height) {
-
-        CreateGroundMesh(squareSize, width, height);
-
+    public void GenerateDungeonMesh(int[,] map, float squareSize, int width, int height) {
+        
         triangleDictionary.Clear();
         outlines.Clear();
         checkedVertices.Clear();
 
-        squareGrid = new SquareGrid(map, squareSize);
+        CreateGroundMesh(squareSize, width, height);
 
-        vertices = new List<Vector3>();
-        triangles = new List<int>();
+        CreateTopMesh(map, squareSize);
+        
+        CreateWallMesh();
+
+        surface.BuildNavMesh();
+    }
+
+    void CreateGroundMesh(float squareSize, int width, int height) {
+        Vector3[] groundVertices = new Vector3[4];
+        Vector2[] groundUVs = new Vector2[4];
+        int[] groundTriangles = new int[6];
+
+        groundVertices[0] = squareSize * new Vector3(-width / 2, 0, height / 2);
+        groundVertices[1] = squareSize * new Vector3(width / 2, 0, height / 2);
+        groundVertices[2] = squareSize * new Vector3(-width / 2, 0, -height / 2);
+        groundVertices[3] = squareSize * new Vector3(width / 2, 0, -height / 2);
+
+        groundUVs[0] = squareSize * new Vector2(-width / 2, height / 2);
+        groundUVs[1] = squareSize * new Vector2(width / 2, height / 2);
+        groundUVs[2] = squareSize * new Vector2(-width / 2, -height / 2);
+        groundUVs[3] = squareSize * new Vector2(width / 2, -height / 2);
+
+        groundTriangles[0] = 0;
+        groundTriangles[1] = 1;
+        groundTriangles[2] = 2;
+        groundTriangles[3] = 2;
+        groundTriangles[4] = 1;
+        groundTriangles[5] = 3;
+
+        groundMesh = new Mesh();
+
+        groundMesh.vertices = groundVertices;
+        groundMesh.uv = groundUVs;
+        groundMesh.triangles = groundTriangles;
+
+        ground = new GameObject("Ground", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer));
+        ground.GetComponent<MeshCollider>().sharedMesh = groundMesh;
+        ground.GetComponent<MeshFilter>().mesh = groundMesh;
+        ground.GetComponent<MeshRenderer>().material = groundMaterial;
+    }
+
+    void CreateTopMesh(int[,] map, float squareSize) {
+        squareGrid = new SquareGrid(map, squareSize);
+        
+        topVertices = new List<Vector3>();
+        topTriangles = new List<int>();
 
         for (int x = 0; x < squareGrid.squares.GetLength(0); x++) {
             for (int y = 0; y < squareGrid.squares.GetLength(1); y++) {
@@ -40,61 +94,24 @@ public class MeshGenerator : MonoBehaviour {
             }
         }
 
-        Mesh topMesh = new Mesh();
-        topMesh.vertices = vertices.ToArray();
-        topMesh.triangles = triangles.ToArray();
-        //topMesh.RecalculateNormals();
+        topMesh = new Mesh();
 
-        GameObject top = new GameObject("Top", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer));
+        topMesh.vertices = topVertices.ToArray();
+        topMesh.triangles = topTriangles.ToArray();
+
+        top = new GameObject("Top", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer));
         top.GetComponent<MeshCollider>().sharedMesh = topMesh;
         top.GetComponent<MeshFilter>().mesh = topMesh;
         top.GetComponent<MeshRenderer>().material = topMaterial;
         top.GetComponent<Transform>().localPosition += Vector3.up * wallHeight;
 
-        Vector2[] uvs = new Vector2[vertices.Count];
-        for (int i = 0; i < vertices.Count; i++) {
-            float percentX = Mathf.InverseLerp(-map.GetLength(0) / 2 * squareSize, map.GetLength(0) / 2 * squareSize, vertices[i].x) * tileAmount;
-            float percentY = Mathf.InverseLerp(-map.GetLength(1) / 2 * squareSize, map.GetLength(1) / 2 * squareSize, vertices[i].z) * tileAmount;
-            uvs[i] = new Vector2(percentX, percentY);
+        Vector2[] topUVs = new Vector2[topVertices.Count];
+        for (int i = 0; i < topVertices.Count; i++) {
+            float percentX = Mathf.InverseLerp(-map.GetLength(0) / 2 * squareSize, map.GetLength(0) / 2 * squareSize, topVertices[i].x) * tileAmount;
+            float percentY = Mathf.InverseLerp(-map.GetLength(1) / 2 * squareSize, map.GetLength(1) / 2 * squareSize, topVertices[i].z) * tileAmount;
+            topUVs[i] = new Vector2(percentX, percentY);
         }
-        topMesh.uv = uvs;
-        
-        CreateWallMesh();
-    }
-
-
-    void CreateGroundMesh(float squareSize, int width, int height) {
-        Vector3[] vertices = new Vector3[4];
-        Vector2[] uv = new Vector2[4];
-        int[] triangles = new int[6];
-
-        vertices[0] = squareSize * new Vector3(-width / 2, 0, height / 2);
-        vertices[1] = squareSize * new Vector3(width / 2, 0, height / 2);
-        vertices[2] = squareSize * new Vector3(-width / 2, 0, -height / 2);
-        vertices[3] = squareSize * new Vector3(width / 2, 0, -height / 2);
-
-        uv[0] = squareSize * new Vector2(-width / 2, height / 2);
-        uv[1] = squareSize * new Vector2(width / 2, height / 2);
-        uv[2] = squareSize * new Vector2(-width / 2, -height / 2);
-        uv[3] = squareSize * new Vector2(width / 2, -height / 2);
-
-        triangles[0] = 0;
-        triangles[1] = 1;
-        triangles[2] = 2;
-        triangles[3] = 2;
-        triangles[4] = 1;
-        triangles[5] = 3;
-
-        Mesh groundMesh = new Mesh();
-        
-        groundMesh.vertices = vertices;
-        groundMesh.uv = uv;
-        groundMesh.triangles = triangles;
-
-        GameObject ground = new GameObject("Ground", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer));
-        ground.GetComponent<MeshCollider>().sharedMesh = groundMesh;
-        ground.GetComponent<MeshFilter>().mesh = groundMesh;
-        ground.GetComponent<MeshRenderer>().material = groundMaterial;
+        topMesh.uv = topUVs;
     }
 
     void CreateWallMesh() {
@@ -103,15 +120,14 @@ public class MeshGenerator : MonoBehaviour {
 
         List<Vector3> wallVertices = new List<Vector3>();
         List<int> wallTriangles = new List<int>();
-        Mesh wallMesh = new Mesh();
 
         foreach (List<int> outline in outlines) {
             for (int i = 0; i < outline.Count - 1; i++) {
                 int startIndex = wallVertices.Count;
-                wallVertices.Add(vertices[outline[i]]); // left
-                wallVertices.Add(vertices[outline[i + 1]]); // right
-                wallVertices.Add(vertices[outline[i]] - Vector3.up * wallHeight); // bottom left
-                wallVertices.Add(vertices[outline[i + 1]] - Vector3.up * wallHeight); // bottom right
+                wallVertices.Add(topVertices[outline[i]] + Vector3.up * wallHeight); // left
+                wallVertices.Add(topVertices[outline[i + 1]] + Vector3.up * wallHeight); // right
+                wallVertices.Add(topVertices[outline[i]] ); // bottom left
+                wallVertices.Add(topVertices[outline[i + 1]] ); // bottom right
 
                 wallTriangles.Add(startIndex + 0);
                 wallTriangles.Add(startIndex + 2);
@@ -122,13 +138,16 @@ public class MeshGenerator : MonoBehaviour {
                 wallTriangles.Add(startIndex + 0);
             }
         }
+
+        wallMesh = new Mesh();
+
         wallMesh.vertices = wallVertices.ToArray();
         wallMesh.triangles = wallTriangles.ToArray();
-        GameObject wall = new GameObject("Walls", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer));
-        wall.GetComponent<MeshCollider>().sharedMesh = wallMesh;
-        wall.GetComponent<MeshFilter>().mesh = wallMesh;
-        wall.GetComponent<MeshRenderer>().material = wallMaterial;
-        wall.GetComponent<Transform>().localPosition += Vector3.up * wallHeight;
+
+        walls = new GameObject("Walls", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer));
+        walls.GetComponent<MeshCollider>().sharedMesh = wallMesh;
+        walls.GetComponent<MeshFilter>().mesh = wallMesh;
+        walls.GetComponent<MeshRenderer>().material = wallMaterial;
     }
 
     void TriangulateSquare(Square square) {
@@ -213,16 +232,16 @@ public class MeshGenerator : MonoBehaviour {
     void AssignVertices(Node[] points) {
         for (int i = 0; i < points.Length; i++) {
             if (points[i].vertexIndex == -1) {
-                points[i].vertexIndex = vertices.Count;
-                vertices.Add(points[i].position);
+                points[i].vertexIndex = topVertices.Count;
+                topVertices.Add(points[i].position);
             }
         }
     }
 
     void CreateTriangle(Node a, Node b, Node c) {
-        triangles.Add(a.vertexIndex);
-        triangles.Add(b.vertexIndex);
-        triangles.Add(c.vertexIndex);
+        topTriangles.Add(a.vertexIndex);
+        topTriangles.Add(b.vertexIndex);
+        topTriangles.Add(c.vertexIndex);
 
         Triangle triangle = new Triangle(a.vertexIndex, b.vertexIndex, c.vertexIndex);
         AddTriangleToDictionary(triangle.vertexIndexA, triangle);
@@ -242,7 +261,7 @@ public class MeshGenerator : MonoBehaviour {
 
     void CalculateMeshOutlines() {
 
-        for (int vertexIndex = 0; vertexIndex < vertices.Count; vertexIndex++) {
+        for (int vertexIndex = 0; vertexIndex < topVertices.Count; vertexIndex++) {
             if (!checkedVertices.Contains(vertexIndex)) {
                 int newOutlineVertex = GetConnectedOutlineVertex(vertexIndex);
                 if (newOutlineVertex != -1) {

@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Player : MonoBehaviour {
-
+    public float speed;
     Rigidbody rigidbody;
     Vector3 velocity;
 
@@ -11,7 +11,7 @@ public class Player : MonoBehaviour {
     }
 
     void Update() {
-        velocity = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized * 10;
+        velocity = speed*new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized * 10;
     }
 
     void FixedUpdate() {

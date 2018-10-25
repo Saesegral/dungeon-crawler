@@ -11,7 +11,7 @@ public class MapGenerator : MonoBehaviour {
     public int passageWidth;
 
     public int borderSize;
-    public int squareSize;
+    public float squareSize;
    
     public string seed;
     public bool useRandomSeed;
@@ -56,7 +56,7 @@ public class MapGenerator : MonoBehaviour {
             }
         }
 
-        meshGen.GenerateMesh(borderedMap, squareSize, width, height);
+        meshGen.GenerateDungeonMesh(borderedMap, squareSize, width, height);
     }
 
     void ProcessMap() {
