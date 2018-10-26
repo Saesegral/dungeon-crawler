@@ -7,6 +7,7 @@ using UnityStandardAssets.Characters.ThirdPerson;
 public class PlayerController : MonoBehaviour {
 
     public Camera cam;
+    public MapGenerator mapGen;
     public NavMeshAgent agent;
     public ThirdPersonCharacter character;
 
@@ -45,4 +46,11 @@ public class PlayerController : MonoBehaviour {
             character.Move(Vector3.zero, false, false);
         }
 	}
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.CompareTag("Exit Portal")) {
+            mapGen.ExitReached();
+        }
+    }
+
 }

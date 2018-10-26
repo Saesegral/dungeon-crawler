@@ -5,16 +5,13 @@ using UnityEngine.AI;
 
 public class MeshGenerator : MonoBehaviour {
 
-    public NavMeshSurface surface;
-
-    public SquareGrid squareGrid;
     public float wallHeight;
 
     public Material wallMaterial;
     public Material topMaterial;
     public Material groundMaterial;
 
-    //This is technically for a specific part, the cave
+    //This is technically for a specific part, the top
     public int tileAmount;
 
     Mesh groundMesh;
@@ -34,18 +31,24 @@ public class MeshGenerator : MonoBehaviour {
     HashSet<int> checkedVertices = new HashSet<int>();
 
     public void GenerateDungeonMesh(int[,] map, float squareSize, int width, int height) {
-        
+        DestroyImmediate(ground);
+        DestroyImmediate(top);
+        DestroyImmediate(walls);
+
         triangleDictionary.Clear();
         outlines.Clear();
         checkedVertices.Clear();
-
-        CreateGroundMesh(squareSize, width, height);
-
-        CreateTopMesh(map, squareSize);
         
+        CreateGroundMesh(squareSize, width, height);
+        CreateTopMesh(map, squareSize, wallHeight);
         CreateWallMesh();
 
-        surface.BuildNavMesh();
+    // Make minimap from topMesh by rendering mesh in UI
+    // Put dot where player is and move that around
+    // Make it not affect clicks.
+    // Make it have alpha to see through
+    // Add fog of war reveal to it
+
     }
 
     void CreateGroundMesh(float squareSize, int width, int height) {
@@ -82,8 +85,8 @@ public class MeshGenerator : MonoBehaviour {
         ground.GetComponent<MeshRenderer>().material = groundMaterial;
     }
 
-    void CreateTopMesh(int[,] map, float squareSize) {
-        squareGrid = new SquareGrid(map, squareSize);
+    void CreateTopMesh(int[,] map, float squareSize, float wallHeight) {
+        SquareGrid squareGrid = new SquareGrid(map, squareSize);
         
         topVertices = new List<Vector3>();
         topTriangles = new List<int>();
@@ -99,11 +102,15 @@ public class MeshGenerator : MonoBehaviour {
         topMesh.vertices = topVertices.ToArray();
         topMesh.triangles = topTriangles.ToArray();
 
-        top = new GameObject("Top", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer));
+        top = new GameObject("Top", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer), typeof(NavMeshModifier));
         top.GetComponent<MeshCollider>().sharedMesh = topMesh;
         top.GetComponent<MeshFilter>().mesh = topMesh;
         top.GetComponent<MeshRenderer>().material = topMaterial;
-        top.GetComponent<Transform>().localPosition += Vector3.up * wallHeight;
+        top.GetComponent<Transform>().position = wallHeight*Vector3.up;
+        top.GetComponent<NavMeshModifier>().overrideArea = true;
+        top.GetComponent<NavMeshModifier>().area = 1;
+
+
 
         Vector2[] topUVs = new Vector2[topVertices.Count];
         for (int i = 0; i < topVertices.Count; i++) {
@@ -112,6 +119,8 @@ public class MeshGenerator : MonoBehaviour {
             topUVs[i] = new Vector2(percentX, percentY);
         }
         topMesh.uv = topUVs;
+
+
     }
 
     void CreateWallMesh() {
@@ -144,10 +153,12 @@ public class MeshGenerator : MonoBehaviour {
         wallMesh.vertices = wallVertices.ToArray();
         wallMesh.triangles = wallTriangles.ToArray();
 
-        walls = new GameObject("Walls", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer));
+        walls = new GameObject("Walls", typeof(MeshCollider), typeof(MeshFilter), typeof(MeshRenderer), typeof(NavMeshModifier));
         walls.GetComponent<MeshCollider>().sharedMesh = wallMesh;
         walls.GetComponent<MeshFilter>().mesh = wallMesh;
         walls.GetComponent<MeshRenderer>().material = wallMaterial;
+        top.GetComponent<NavMeshModifier>().overrideArea = true;
+        top.GetComponent<NavMeshModifier>().area = 1;
     }
 
     void TriangulateSquare(Square square) {
@@ -363,7 +374,7 @@ public class MeshGenerator : MonoBehaviour {
 
             for (int x = 0; x < nodeCountX; x++) {
                 for (int y = 0; y < nodeCountY; y++) {
-                    Vector3 pos = new Vector3(-mapWidth / 2 + x * squareSize + squareSize / 2, 0, -mapHeight / 2 + y * squareSize + squareSize / 2);
+                    Vector3 pos = new Vector3(-mapWidth / 2 + x * squareSize + squareSize / 2,0, -mapHeight / 2 + y * squareSize + squareSize / 2);
                     controlNodes[x, y] = new ControlNode(pos, map[x, y] == 1, squareSize);
                 }
             }

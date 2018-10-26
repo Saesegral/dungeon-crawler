@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Procedural Dungeon Tutorial/Scenes/Scene 3D.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
     path: Assets/Scenes/Title.unity
     guid: 722597784252d4c4798142a5772c625f
   - enabled: 1
@@ -16,5 +13,5 @@ EditorBuildSettings:
     guid: 869a05cc01e9a1f46adee1f5c60db7f6
   - enabled: 1
     path: Assets/Scenes/Dungeon.unity
-    guid: c88bc4e1fc2b3f34594009fb6a8152d0
+    guid: 604b25cd9c810c24b829417bb5e47392
   m_configObjects: {}

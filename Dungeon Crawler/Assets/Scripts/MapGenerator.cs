@@ -2,13 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.AI;
 
 public class MapGenerator : MonoBehaviour {
+
+    public NavMeshSurface surface;
 
     public int width;
     public int height;
 
     public int passageWidth;
+    public int wallThresholdSize;
 
     public int borderSize;
     public float squareSize;
@@ -19,19 +23,40 @@ public class MapGenerator : MonoBehaviour {
     [Range(0, 100)]
     public int randomFillPercent;
 
+    public GameObject exitPortal;
+
     MeshGenerator meshGen;
     int[,] map;
 
-    void Start() {
+    bool exitReached;
+    
+
+    private void Start() {
         meshGen = GetComponent<MeshGenerator>();
         GenerateMap();
+        surface.BuildNavMesh();
+        exitReached = false;
     }
 
-    void Update() {
-        //if (Input.GetMouseButtonDown(0)) {
-        //    //Clear old mesh wall collider + other stuff first or something 
-        //    Start();
-        //}
+    public void ExitReached() {
+        exitReached = true;
+    }
+
+    private void Update() {
+        if (exitReached) {
+            GenerateMap();
+            surface.BuildNavMesh();
+            HideExit();
+            exitReached = false;
+        }
+    }
+
+    void HideExit() {
+        if (useRandomSeed) {
+            seed = Time.time.ToString();
+        }
+        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+        exitPortal.transform.position +=Vector3.forward * pseudoRandom.Next(0,5) +  Vector3.right * pseudoRandom.Next(0, 5);
     }
 
     void GenerateMap() {
@@ -61,7 +86,6 @@ public class MapGenerator : MonoBehaviour {
 
     void ProcessMap() {
         List<List<Coord>> wallRegions = GetRegions(1);
-        int wallThresholdSize = 50;
 
         foreach (List<Coord> wallRegion in wallRegions) {
             if (wallRegion.Count < wallThresholdSize) {
