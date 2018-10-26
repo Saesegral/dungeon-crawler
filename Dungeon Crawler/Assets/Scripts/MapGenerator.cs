@@ -8,6 +8,9 @@ public class MapGenerator : MonoBehaviour {
 
     public NavMeshSurface surface;
 
+    //Remove later
+    public Camera cam;
+
     public int width;
     public int height;
 
@@ -43,6 +46,19 @@ public class MapGenerator : MonoBehaviour {
     }
 
     private void Update() {
+        if (Input.GetMouseButtonDown(1)) {
+            GenerateMap();
+            surface.BuildNavMesh();
+            HideExit();
+            exitReached = false;
+        }
+        
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f) {
+            cam.orthographicSize--;
+        } else if (Input.GetAxis("Mouse ScrollWheel") < 0f) {
+            cam.orthographicSize++;
+        }
+
         if (exitReached) {
             GenerateMap();
             surface.BuildNavMesh();
