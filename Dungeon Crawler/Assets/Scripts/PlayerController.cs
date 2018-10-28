@@ -7,7 +7,7 @@ using UnityStandardAssets.Characters.ThirdPerson;
 public class PlayerController : MonoBehaviour {
 
     public Camera cam;
-    public MapGenerator mapGen;
+    public GameController gameControl;
     public NavMeshAgent agent;
     public ThirdPersonCharacter character;
 
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 #elif (UNITY_ANDROID || UNIT_IOS) && !UNITY_EDITOR
@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Exit Portal")) {
-            mapGen.ExitReached();
+            gameControl.ExitReached();
         }
     }
 

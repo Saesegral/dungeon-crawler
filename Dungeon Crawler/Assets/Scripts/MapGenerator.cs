@@ -6,11 +6,6 @@ using UnityEngine.AI;
 
 public class MapGenerator : MonoBehaviour {
 
-    public NavMeshSurface surface;
-
-    //Remove later
-    public Camera cam;
-
     public int width;
     public int height;
 
@@ -19,63 +14,16 @@ public class MapGenerator : MonoBehaviour {
 
     public int borderSize;
     public float squareSize;
-   
+
     public string seed;
     public bool useRandomSeed;
 
     [Range(0, 100)]
     public int randomFillPercent;
 
-    public GameObject exitPortal;
+    private int[,] map;
 
-    MeshGenerator meshGen;
-    int[,] map;
-
-    bool exitReached;
-    
-
-    private void Start() {
-        meshGen = GetComponent<MeshGenerator>();
-        GenerateMap();
-        surface.BuildNavMesh();
-        exitReached = false;
-    }
-
-    public void ExitReached() {
-        exitReached = true;
-    }
-
-    private void Update() {
-        if (Input.GetMouseButtonDown(1)) {
-            GenerateMap();
-            surface.BuildNavMesh();
-            HideExit();
-            exitReached = false;
-        }
-        
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f) {
-            cam.orthographicSize--;
-        } else if (Input.GetAxis("Mouse ScrollWheel") < 0f) {
-            cam.orthographicSize++;
-        }
-
-        if (exitReached) {
-            GenerateMap();
-            surface.BuildNavMesh();
-            HideExit();
-            exitReached = false;
-        }
-    }
-
-    void HideExit() {
-        if (useRandomSeed) {
-            seed = Time.time.ToString();
-        }
-        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
-        exitPortal.transform.position +=Vector3.forward * pseudoRandom.Next(0,5) +  Vector3.right * pseudoRandom.Next(0, 5);
-    }
-
-    void GenerateMap() {
+    public void GenerateMap(MeshGenerator meshGen) {
         map = new int[width, height];
         RandomFillMap();
 
@@ -84,7 +32,7 @@ public class MapGenerator : MonoBehaviour {
         }
 
         ProcessMap();
-        
+
         int[,] borderedMap = new int[width + borderSize * 2, height + borderSize * 2];
 
         for (int x = 0; x < borderedMap.GetLength(0); x++) {
@@ -100,6 +48,59 @@ public class MapGenerator : MonoBehaviour {
         meshGen.GenerateDungeonMesh(borderedMap, squareSize, width, height);
     }
 
+    void RandomFillMap() {
+        if (useRandomSeed) {
+            seed = Time.time.ToString();
+        }
+
+        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
+                    map[x, y] = 1;
+                } else {
+                    map[x, y] = (pseudoRandom.Next(0, 100) < randomFillPercent) ? 1 : 0;
+                }
+            }
+        }
+    }
+
+    void SmoothMap() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int neighbourWallTiles = GetSurroundingWallCount(x, y);
+
+                if (neighbourWallTiles > 4)
+                    map[x, y] = 1;
+                else if (neighbourWallTiles < 4)
+                    map[x, y] = 0;
+
+            }
+        }
+    }
+
+    int GetSurroundingWallCount(int gridX, int gridY) {
+        int wallCount = 0;
+        for (int neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX++) {
+            for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY++) {
+                if (IsInMapRange(neighbourX, neighbourY)) {
+                    if (neighbourX != gridX || neighbourY != gridY) {
+                        wallCount += map[neighbourX, neighbourY];
+                    }
+                } else {
+                    wallCount++;
+                }
+            }
+        }
+
+        return wallCount;
+    }
+
+    bool IsInMapRange(int x, int y) {
+        return x >= 0 && x < width && y >= 0 && y < height;
+    }
+    
     void ProcessMap() {
         List<List<Coord>> wallRegions = GetRegions(1);
 
@@ -325,59 +326,6 @@ public class MapGenerator : MonoBehaviour {
         return tiles;
     }
 
-    bool IsInMapRange(int x, int y) {
-        return x >= 0 && x < width && y >= 0 && y < height;
-    }
-
-    void RandomFillMap() {
-        if (useRandomSeed) {
-            seed = Time.time.ToString();
-        }
-
-        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
-                    map[x, y] = 1;
-                } else {
-                    map[x, y] = (pseudoRandom.Next(0, 100) < randomFillPercent) ? 1 : 0;
-                }
-            }
-        }
-    }
-
-    void SmoothMap() {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                int neighbourWallTiles = GetSurroundingWallCount(x, y);
-
-                if (neighbourWallTiles > 4)
-                    map[x, y] = 1;
-                else if (neighbourWallTiles < 4)
-                    map[x, y] = 0;
-
-            }
-        }
-    }
-
-    int GetSurroundingWallCount(int gridX, int gridY) {
-        int wallCount = 0;
-        for (int neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX++) {
-            for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY++) {
-                if (IsInMapRange(neighbourX, neighbourY)) {
-                    if (neighbourX != gridX || neighbourY != gridY) {
-                        wallCount += map[neighbourX, neighbourY];
-                    }
-                } else {
-                    wallCount++;
-                }
-            }
-        }
-
-        return wallCount;
-    }
-
     struct Coord {
         public int tileX;
         public int tileY;
@@ -445,5 +393,4 @@ public class MapGenerator : MonoBehaviour {
             return otherRoom.roomSize.CompareTo(roomSize);
         }
     }
-
 }

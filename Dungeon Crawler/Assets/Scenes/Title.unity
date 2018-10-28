@@ -90,7 +90,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -439,6 +439,34 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 194c42cd6b456eb47a0f5bb5bf653a73, type: 2}
+    - target: {fileID: 400010, guid: fb60eff562572594392d0b6627d567f6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.6471141
+      objectReference: {fileID: 0}
+    - target: {fileID: 400010, guid: fb60eff562572594392d0b6627d567f6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.28503227
+      objectReference: {fileID: 0}
+    - target: {fileID: 400010, guid: fb60eff562572594392d0b6627d567f6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.28503227
+      objectReference: {fileID: 0}
+    - target: {fileID: 400010, guid: fb60eff562572594392d0b6627d567f6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.6471141
+      objectReference: {fileID: 0}
+    - target: {fileID: 400010, guid: fb60eff562572594392d0b6627d567f6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.019242454
+      objectReference: {fileID: 0}
+    - target: {fileID: 400010, guid: fb60eff562572594392d0b6627d567f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 400010, guid: fb60eff562572594392d0b6627d567f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -47.544003
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 9500000, guid: fb60eff562572594392d0b6627d567f6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fb60eff562572594392d0b6627d567f6, type: 3}
@@ -655,7 +683,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &889600416
 Transform:
   m_ObjectHideFlags: 0

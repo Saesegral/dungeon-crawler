@@ -6,9 +6,9 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-public class GameControl : MonoBehaviour {
+public class GameData : MonoBehaviour {
 
-    public static GameControl control;
+    public static GameData gameData;
 
     public int highestLevelCompleted;
     public bool[] achievements; // Make separate method to extract achievements, achievements are broken into 3 segment blocks.
@@ -18,10 +18,10 @@ public class GameControl : MonoBehaviour {
     private string fileName = "DungeonGameSave.dat";
 
     void Awake() {
-        if (control == null) {
+        if (gameData == null) {
             DontDestroyOnLoad(gameObject);
-            control = this;
-        } else if (control != this) {
+            gameData = this;
+        } else if (gameData != this) {
             Destroy(gameObject);
 
         }
