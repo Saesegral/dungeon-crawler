@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu (menuName = "PluggableAI/Decisions/Look")]
-public class LookDecision : Decision {
+[CreateAssetMenu (menuName = "PluggableAI/Decisions/EnemySeen")]
+public class EnemySeenDecision : Decision {
 
     public override bool Decide(StateController controller) {
         bool targetVisible = Look(controller);
@@ -13,9 +13,9 @@ public class LookDecision : Decision {
     private bool Look(StateController controller) {
         RaycastHit hit;
         
-        Debug.DrawRay(controller.eyes.position, controller.eyes.forward.normalized * controller.enemyStats.lookRange, Color.green);
+        Debug.DrawRay(controller.eyes.position, controller.eyes.forward.normalized * controller.attribs.lookRange, Color.green);
 
-        if(Physics.SphereCast (controller.eyes.position, controller.enemyStats.lookSphereCastRadius, controller.eyes.forward, out hit, controller. enemyStats.lookRange) && hit.collider.CompareTag("Player")) {
+        if(Physics.SphereCast (controller.eyes.position, controller.attribs.lookSphereCastRadius, controller.eyes.forward, out hit, controller.attribs.lookRange) && hit.collider.CompareTag("Player")) {
             controller.chaseTarget = hit.transform;
             return true;
         } else {

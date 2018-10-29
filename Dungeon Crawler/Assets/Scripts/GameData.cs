@@ -11,6 +11,7 @@ public class GameData : MonoBehaviour {
     public static GameData gameData;
 
     public int highestLevelCompleted;
+    public Attribute playerAttribs;
     public bool[] achievements; // Make separate method to extract achievements, achievements are broken into 3 segment blocks.
 
     //This is the name of the save data

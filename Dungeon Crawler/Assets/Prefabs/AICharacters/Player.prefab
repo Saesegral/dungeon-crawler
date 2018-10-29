@@ -1175,6 +1175,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  gameControl: {fileID: 0}
   agent: {fileID: 195381817656569536}
   character: {fileID: 114076259601039076}
 --- !u!136 &136970225585871320

@@ -9,14 +9,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a33e1c9771931814c8e15a0880e0533e, type: 3}
-  m_Name: SkeletonStats
+  m_Name: SkeletonAttribs
   m_EditorClassIdentifier: 
+  health: 100
+  armor: 10
   moveSpeed: 1
   lookRange: 40
   lookSphereCastRadius: 1
   attackRange: 1
   attackRate: 1
-  attackForce: 15
   attackDamage: 50
-  searchDuration: 4
-  searchingTurnSpeed: 120
+  searchDuration: 10000

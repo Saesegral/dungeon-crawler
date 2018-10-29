@@ -6,9 +6,10 @@ using UnityEngine.AI;
 public class StateController : MonoBehaviour {
 
     public State currentState;
-	public EnemyStats enemyStats;
+	public Attributes attribs;
 	public Transform eyes;
     public State remainState;
+    public List<GameObject> wayPoints;
 
 
 	[HideInInspector] public NavMeshAgent navMeshAgent;
@@ -16,19 +17,19 @@ public class StateController : MonoBehaviour {
 	[HideInInspector] public List<Transform> wayPointList;
     [HideInInspector] public int nextWayPoint;
     [HideInInspector] public Transform chaseTarget;
+
     [HideInInspector] public float stateTimeElapsed;
+    [HideInInspector] public bool inAttackRegion;
 
-	private bool aiActive;
+    //Remove aiActive? - Should always be active.
+    private bool aiActive;
 
-
-	void Awake () 
-	{
-	    //gameControl = GetComponent<GameController> ();
+	void Awake () {
 		navMeshAgent = GetComponent<NavMeshAgent> ();
-	}
+        inAttackRegion = false;
+    }
 
-	public void SetupAI(bool aiActivationFromTankManager, List<Transform> wayPointsFromTankManager)
-	{
+	public void SetupAI(bool aiActivationFromTankManager, List<Transform> wayPointsFromTankManager){
 		wayPointList = wayPointsFromTankManager;
 		aiActive = aiActivationFromTankManager;
 		if (aiActive) 
@@ -49,7 +50,7 @@ public class StateController : MonoBehaviour {
     private void OnDrawGizmos() {
         if(currentState !=null && eyes!= null) {
             Gizmos.color = currentState.sceneGizmoColor;
-            Gizmos.DrawWireSphere(eyes.position, enemyStats.lookSphereCastRadius);
+            Gizmos.DrawWireSphere(eyes.position, attribs.lookSphereCastRadius);
         }
     }
 
@@ -60,12 +61,20 @@ public class StateController : MonoBehaviour {
         }
     }
 
+    private void OnExitState() {
+        stateTimeElapsed = 0;
+    }
+
     public bool CheckIfCountDownElapsed(float duration) {
         stateTimeElapsed += Time.deltaTime;
         return (stateTimeElapsed >= duration);
     }
+    
+    public bool InAttackRegion() {
+        return inAttackRegion;
+    }
 
-    private void OnExitState() {
-        stateTimeElapsed = 0;
+    public void SetAttackRegion(bool collided) {
+        inAttackRegion = collided;
     }
 }

@@ -8,6 +8,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bda7bf692a89e1d49831e8ff7b557cea, type: 3}
-  m_Name: LookDecision
+  m_Script: {fileID: 11500000, guid: 72a973b4a516dca45bc2db85ecfd457d, type: 3}
+  m_Name: In Attack Region Decision
   m_EditorClassIdentifier: 
