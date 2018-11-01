@@ -6,6 +6,11 @@ using UnityEngine.AI;
 
 public class MapGenerator : MonoBehaviour {
 
+<<<<<<< HEAD
+=======
+    public NavMeshSurface surface;
+
+>>>>>>> parent of 8406e60... First Web Playable Build
     public int width;
     public int height;
 
@@ -35,6 +40,7 @@ public class MapGenerator : MonoBehaviour {
 
         int[,] borderedMap = new int[width + borderSize * 2, height + borderSize * 2];
 
+<<<<<<< HEAD
         for (int x = 0; x < borderedMap.GetLength(0); x++) {
             for (int y = 0; y < borderedMap.GetLength(1); y++) {
                 if (x >= borderSize && x < width + borderSize && y >= borderSize && y < height + borderSize) {
@@ -46,6 +52,15 @@ public class MapGenerator : MonoBehaviour {
         }
 
         meshGen.GenerateDungeonMesh(borderedMap, squareSize, width, height);
+=======
+    private void Update() {
+        if (exitReached) {
+            GenerateMap();
+            surface.BuildNavMesh();
+            HideExit();
+            exitReached = false;
+        }
+>>>>>>> parent of 8406e60... First Web Playable Build
     }
 
     void RandomFillMap() {

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17933226, g: 0.22454937, b: 0.30624115, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028328, g: 0.22571322, b: 0.30692163, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -206,12 +206,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 170076733}
-  m_LocalRotation: {x: 0.4050376, y: -0.31265724, z: 0.20567164, w: 0.8341997}
-  m_LocalPosition: {x: 0, y: 14.92, z: 0}
+  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+<<<<<<< HEAD
   m_LocalEulerAnglesHint: {x: 53.550003, y: -36.696003, z: 8.700001}
 --- !u!1 &303194960
 GameObject:
@@ -242,6 +243,10 @@ Transform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &325011335
+=======
+  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1001 &365724503
+>>>>>>> parent of 8406e60... First Web Playable Build
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -365,11 +370,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4891110440811234, guid: 4efccada6b694b146b1208f1957dde0f, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 52.4
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4891110440811234, guid: 4efccada6b694b146b1208f1957dde0f, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -88.9
+      value: -16
       objectReference: {fileID: 0}
     - target: {fileID: 4891110440811234, guid: 4efccada6b694b146b1208f1957dde0f, type: 2}
       propertyPath: m_LocalRotation.x
@@ -594,9 +599,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e6daa9240dd6ef4585f1d17c95f6e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   cam: {fileID: 2115487127}
   closestZoom: 1
   farthestZoom: 10
+=======
+  surface: {fileID: 1189037254}
+  width: 100
+  height: 100
+  passageWidth: 6
+  wallThresholdSize: 50
+  borderSize: 10
+  squareSize: 1
+>>>>>>> parent of 8406e60... First Web Playable Build
   seed: 
   useRandomSeed: 1
 --- !u!4 &1578091314
