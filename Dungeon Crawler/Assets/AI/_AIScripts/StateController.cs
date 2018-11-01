@@ -20,26 +20,24 @@ public class StateController : MonoBehaviour {
 
     [HideInInspector] public float stateTimeElapsed;
     [HideInInspector] public bool inAttackRegion;
-
-    //Remove aiActive? - Should always be active.
+    
     private bool aiActive;
 
-	void Awake () {
+    void Awake () {
 		navMeshAgent = GetComponent<NavMeshAgent> ();
         inAttackRegion = false;
     }
 
-	public void SetupAI(bool aiActivationFromTankManager, List<Transform> wayPointsFromTankManager){
-		wayPointList = wayPointsFromTankManager;
-		aiActive = aiActivationFromTankManager;
-		if (aiActive) 
-		{
-			navMeshAgent.enabled = true;
-		} else 
-		{
-			navMeshAgent.enabled = false;
-		}
-	}
+    //Called from the Dungeon Generator to setup enemies.
+    public void SetupAI(bool aiActivationFromTankManager, List<Transform> wayPointsFromTankManager) {
+        wayPointList = wayPointsFromTankManager;
+        aiActive = aiActivationFromTankManager;
+        if (aiActive) {
+            navMeshAgent.enabled = true;
+        } else {
+            navMeshAgent.enabled = false;
+        }
+    }
 
     private void Update() {
         if (!aiActive)

@@ -595,7 +595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 2115487127}
-  closestZoom: 0
+  closestZoom: 1
   farthestZoom: 10
   seed: 
   useRandomSeed: 1
@@ -784,6 +784,7 @@ MonoBehaviour:
   wayPointList: []
   nextWayPoint: 0
   chaseTarget: {fileID: 0}
+  stateTimeElapsed: 0
   inAttackRegion: 0
 --- !u!4 &2049910278 stripped
 Transform:

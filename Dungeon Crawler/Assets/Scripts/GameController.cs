@@ -4,13 +4,12 @@ using UnityEngine.AI;
 public class GameController : MonoBehaviour {
     
     public Camera cam;
-    public int closestZoom = 0;
+    public int closestZoom = 1;
     public int farthestZoom = 10;
 
     public string seed;
     public bool useRandomSeed;
-
-
+    
     private MapGenerator mapGen;
     private MeshGenerator meshGen;
     private NavMeshSurface surface;

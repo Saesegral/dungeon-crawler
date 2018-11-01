@@ -430,6 +430,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4043123648108464}
   - component: {fileID: 65281413030786222}
+  - component: {fileID: 114735188979900360}
   m_Layer: 0
   m_Name: Attack Region
   m_TagString: Untagged
@@ -1249,8 +1250,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.15, z: 0.1}
-  m_Center: {x: 0, y: 0.07, z: 0.05}
+  m_Size: {x: 0.13634129, y: 0.15991126, z: 0.11431625}
+  m_Center: {x: -0.0005506277, y: 0.074955635, z: 0.042841878}
 --- !u!95 &95181736565107862
 Animator:
   serializedVersion: 3
@@ -1280,17 +1281,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed90ff6e4cb51bd4b8ea1a4b33eee328, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: {fileID: 11400000, guid: 993622c7889c24b49b37f26a7bc6e00c, type: 2}
+  currentState: {fileID: 11400000, guid: 10a814c6bd1a7224e85fc54ee806ecb5, type: 2}
   attribs: {fileID: 11400000, guid: fa7e2f566bda0754fb592f15f1d4dcc5, type: 2}
   eyes: {fileID: 4982224783852448}
   remainState: {fileID: 11400000, guid: e5f9ed76536ee134495373d89749c9ae, type: 2}
-  attackRegion: {fileID: 65281413030786222}
+  wayPoints:
+  - {fileID: 0}
+  - {fileID: 0}
   navMeshAgent: {fileID: 0}
   gameControl: {fileID: 0}
   wayPointList: []
   nextWayPoint: 0
   chaseTarget: {fileID: 0}
   stateTimeElapsed: 0
+  inAttackRegion: 0
+--- !u!114 &114735188979900360
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1779980385453088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 512d16ba45a62694fa40e9a078bbacc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!137 &137106629294874186
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

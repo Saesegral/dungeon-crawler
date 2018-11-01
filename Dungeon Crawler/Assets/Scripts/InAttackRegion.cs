@@ -18,7 +18,7 @@ public class InAttackRegion : MonoBehaviour {
 
     private void OnTriggerExit (Collider other) {
         if (other.gameObject.CompareTag("Player")) {
-            stateControl.SetAttackRegion(true);
+            stateControl.SetAttackRegion(false);
         }
     }
 }
